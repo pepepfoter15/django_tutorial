@@ -33,3 +33,9 @@ class Categoria(models.Model):
 
     def __str__(self):
         return self.Abr+" - "+self.Nombre
+
+class Cantidad(models.Model):
+    Valor = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.Abr} - {self.Valor} - {self.Nombre}"
