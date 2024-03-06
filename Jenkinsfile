@@ -1,16 +1,17 @@
 pipeline {
     agent none
     stages {
-        stage ('Testing django') { 
+        stage('Testing django') { 
             agent { 
-                docker { image 'python:3'
-                args '-u root:root'
+                docker { 
+                    image 'python:3'
+                    args '-u root:root'
                 }
             }
             stages {
                 stage('Clone') {
                     steps {
-                        git branch:'master',url:'https://github.com/fabiiogonzalez8/django_tutorial.git'
+                        git branch:'master', url:'https://github.com/fabiiogonzalez8/django_tutorial.git'
                     }
                 }
                 stage('Install') {
@@ -32,8 +33,8 @@ pipeline {
                     steps {
                         script {
                             withDockerRegistry([credentialsId: 'CREDENCIALES_DOCKERHUB', url: '']) {
-                            def dockerImage = docker.build("fabiiogonzalez8/django_tutorial:${env.BUILD_ID}")
-                            dockerImage.push()
+                                def dockerImage = docker.build("fabiiogonzalez8/django_tutorial:${env.BUILD_ID}")
+                                dockerImage.push()
                             }
                         }
                     }
@@ -47,8 +48,7 @@ pipeline {
                 }
             }
         }
-    }
-    stage('SSH') {
+        stage('SSH') {
             agent any
             steps {
                 script {
