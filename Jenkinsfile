@@ -38,7 +38,7 @@ pipeline {
                         }
                     }
                 }
-                stage('Remove image') {
+                stage('Eliminar imagen') {
                     steps {
                         script {
                             sh "docker rmi fabiiogonzalez8/django_tutorial:${env.BUILD_ID}"
