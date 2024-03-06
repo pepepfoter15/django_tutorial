@@ -56,7 +56,7 @@ pipeline {
                     sshagent(credentials: ['clave']) {
                         sh 'ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es cd python'
                         sh 'ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es docker compose down -v'
-                        sh "ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es docker rmi fabiiogonzalez/django:latest"
+                        sh "ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es docker rmi fabiiogonzalez8/django:latest"
                         sh "ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es docker pull fabiiogonzalez8/django:${env.BUILD_ID}"
                         sh "ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es wget https://raw.githubusercontent.com/fabiiogonzalez8/django_tutorial/master/docker-compose.yaml -O docker-compose.yaml"
                         sh "ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es DJANGO_VERSION=${env.BUILD_ID} docker-compose up -d --force-recreate"
