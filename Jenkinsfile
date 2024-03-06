@@ -1,13 +1,9 @@
 pipeline {
-    environment {
-        IMAGEN = "fabiiogonzalez8/django_tutorial"
-        LOGIN = 'CREDENCIALES_DOCKERHUB'
-    }
     agent none
     stages {
-        stage("Desarrollo") {
-            agent {
-                docker { image "python:3"
+        stage ('Testing django') { 
+            agent { 
+                docker { image 'python:3'
                 args '-u root:root'
                 }
             }
@@ -22,46 +18,35 @@ pipeline {
                         sh 'pip install -r requirements.txt'
                     }
                 }
-                stage('Test')
-                {
+                stage('Test') {
                     steps {
                         sh 'python3 manage.py test'
                     }
-                }
-
+                } 
             }
         }
-        stage("Construccion") {
+        stage('Subir imagen') {
             agent any
             stages {
-                stage('CloneAnfitrion') {
-                    steps {
-                        git branch:'main',url:'https://github.com/fabiiogonzalez8/docker_python.git'
-                    }
-                }
-                stage('BuildImage') {
+                stage('Construir') {
                     steps {
                         script {
-                            newApp = docker.build "$IMAGEN:latest"
-                        }
-                    }
-                }
-                stage('UploadImage') {
-                    steps {
-                        script {
-                            docker.withRegistry( '', LOGIN ) {
-                                newApp.push()
+                            withDockerRegistry([credentialsId: 'CREDENCIALES_DOCKERHUB', url: '']) {
+                            def dockerImage = docker.build("fabiiogonzalez8/django_tutorial:${env.BUILD_ID}")
+                            dockerImage.push()
                             }
                         }
                     }
                 }
-                stage('RemoveImage') {
+                stage('Remove image') {
                     steps {
-                        sh "docker rmi $IMAGEN:latest"
+                        script {
+                            sh "docker rmi fabiiogonzalez8/django_tutorial:${env.BUILD_ID}"
+                        }
                     }
                 }
             }
-        }           
+        }
     }
     post {
         always {
