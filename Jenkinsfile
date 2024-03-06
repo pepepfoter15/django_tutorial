@@ -52,7 +52,6 @@ pipeline {
             agent any
             steps {
                 script {
-                    String tagRemove = env.BUILD_ID.toInteger() - 1
                     sshagent(credentials: ['clave']) {
                         sh "ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es wget https://raw.githubusercontent.com/fabiiogonzalez8/django_tutorial/master/docker-compose.yaml -O docker-compose.yaml"
                         sh "ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es docker-compose up -d --force-recreate"
