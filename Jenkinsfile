@@ -54,9 +54,6 @@ pipeline {
                 script {
                     String tagRemove = env.BUILD_ID.toInteger() - 1
                     sshagent(credentials: ['clave']) {
-                        sh 'ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es docker-compose down'
-                        sh "ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es docker rmi fabiiogonzalez/django_tutorial:${tagRemove}"
-                        sh "ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es docker pull fabiiogonzalez8/django_tutorial:${env.BUILD_ID}"
                         sh "ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es wget https://raw.githubusercontent.com/fabiiogonzalez8/django_tutorial/master/docker-compose.yaml -O docker-compose.yaml"
                         sh "ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es DJANGO_VERSION=${env.BUILD_ID} docker-compose up -d --force-recreate"
                     }
