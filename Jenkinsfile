@@ -33,7 +33,7 @@ pipeline {
                     steps {
                         script {
                             withDockerRegistry([credentialsId: 'CREDENCIALES_DOCKERHUB', url: '']) {
-                                def dockerImage = docker.build("fabiiogonzalez8/django_tutorial:${env.BUILD_ID}")
+                                def dockerImage = docker.build("fabiiogonzalez8/django:${env.BUILD_ID}")
                                 dockerImage.push()
                             }
                         }
@@ -42,7 +42,7 @@ pipeline {
                 stage('Eliminar imagen') {
                     steps {
                         script {
-                            sh "docker rmi fabiiogonzalez8/django_tutorial:${env.BUILD_ID}"
+                            sh "docker rmi fabiiogonzalez8/django:${env.BUILD_ID}"
                         }
                     }
                 }
@@ -54,8 +54,6 @@ pipeline {
                 script {
                     String tagRemove = env.BUILD_ID.toInteger() - 1
                     sshagent(credentials: ['clave']) {
-                        sh 'ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es cd python'
-                        sh "ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es docker rmi -f fabiiogonzalez8/django:v1"
                         sh "ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es wget https://raw.githubusercontent.com/fabiiogonzalez8/django_tutorial/master/docker-compose.yaml -O docker-compose.yaml"
                         sh "ssh -o StrictHostKeyChecking=no fabio@goku.supergallo.es docker-compose up -d --force-recreate"
                     }
