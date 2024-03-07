@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
     stages {
         stage('Testing django') { 
             agent { 
@@ -8,56 +8,33 @@ pipeline {
                     args '-u root:root'
                 }
             }
-            stages {
-                stage('Clone') {
-                    steps {
-                        git branch:'master', url:'https://github.com/fabiiogonzalez8/django_tutorial.git'
-                    }
+            steps {
+                script {
+                    git branch: 'master', url: 'https://github.com/fabiiogonzalez8/django_tutorial.git'
+                    sh 'pip install -r requirements.txt'
+                    sh 'python manage.py test'
                 }
-                stage('Install') {
-                    steps {
-                        sh 'pip install -r requirements.txt'
-                    }
-                }
-                stage('Test') {
-                    steps {
-                        sh 'python3 manage.py test'
-                    }
-                } 
             }
         }
         stage('Copiar settings') {
-            agent any
-            stages {
-                stage('Copiado del settings') {
-                    steps {
-                        sh 'cp django_tutorial/settings.bak django_tutorial/settings.py'
-                    }
+            steps {
+                script {
+                    sh 'cp django_tutorial/settings.bak django_tutorial/settings.py'
                 }
+            }
+        }
         stage('Subir imagen') {
-            agent any
-            stages {
-                stage('Construir') {
-                    steps {
-                        script {
-                            withDockerRegistry([credentialsId: 'CREDENCIALES_DOCKERHUB', url: '']) {
-                                def dockerImage = docker.build("fabiiogonzalez8/django:${env.BUILD_ID}")
-                                dockerImage.push()
-                            }
-                        }
+            steps {
+                script {
+                    withDockerRegistry([credentialsId: 'CREDENCIALES_DOCKERHUB', url: '']) {
+                        def dockerImage = docker.build("fabiiogonzalez8/django:${env.BUILD_ID}")
+                        dockerImage.push()
                     }
-                }
-                stage('Eliminar imagen') {
-                    steps {
-                        script {
-                            sh "docker rmi fabiiogonzalez8/django:${env.BUILD_ID}"
-                        }
-                    }
+                    sh "docker rmi fabiiogonzalez8/django:${env.BUILD_ID}"
                 }
             }
         }
         stage('SSH') {
-            agent any
             steps {
                 script {
                     sshagent(credentials: ['clave']) {
