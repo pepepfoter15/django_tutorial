@@ -3,7 +3,7 @@ WORKDIR /usr/local
 RUN pip install --root-user-action=ignore --upgrade pip && pip install --root-user-action=ignore django mysqlclient && mkdir static 
 COPY . /usr/local
 ENV ALLOWED_HOSTS=*
-ENV HOST=mariadb
+ENV HOST=bd_mariadb_django
 ENV USUARIO=django
 ENV CONTRA=django
 ENV BASE_DATOS=django
