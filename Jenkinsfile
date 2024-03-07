@@ -26,6 +26,14 @@ pipeline {
                 } 
             }
         }
+        stage('Copiar settings') {
+            agent any
+            stages {
+                stage('Copiado del settings') {
+                    steps {
+                        sh 'cp django_tutorial/settings.bak django_tutorial/settings.py'
+                    }
+                }
         stage('Subir imagen') {
             agent any
             stages {
