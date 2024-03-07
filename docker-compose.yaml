@@ -5,7 +5,7 @@ services:
     image: fabiiogonzalez8/django:35
     restart: always
     environment:
-      ALLOWED_HOSTS: "*"
+      ALLOWED_HOSTS: "djangodocker.supergallo.es"
       HOST: bd_mariadb_django
       USUARIO: django
       CONTRA: django
